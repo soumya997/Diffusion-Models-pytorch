@@ -7,7 +7,7 @@ from torch import optim
 from utils import *
 from modules import UNet
 import logging
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s: %(message)s", level=logging.INFO, datefmt="%I:%M:%S")
 
@@ -66,7 +66,7 @@ def train(args):
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
     mse = nn.MSELoss()
     diffusion = Diffusion(img_size=args.image_size, device=device)
-    logger = SummaryWriter(os.path.join("runs", args.run_name))
+    # logger = SummaryWriter(os.path.join("runs", args.run_name))
     l = len(dataloader)
 
     for epoch in range(args.epochs):
@@ -84,7 +84,7 @@ def train(args):
             optimizer.step()
 
             pbar.set_postfix(MSE=loss.item())
-            logger.add_scalar("MSE", loss.item(), global_step=epoch * l + i)
+            # logger.add_scalar("MSE", loss.item(), global_step=epoch * l + i)
 
         sampled_images = diffusion.sample(model, n=images.shape[0])
         save_images(sampled_images, os.path.join("results", args.run_name, f"{epoch}.jpg"))
@@ -99,8 +99,8 @@ def launch():
     args.epochs = 500
     args.batch_size = 12
     args.image_size = 64
-    args.dataset_path = r"C:\Users\dome\datasets\landscape_img_folder"
-    args.device = "cuda"
+    args.dataset_path = r"/media/somusan/new_volume/Documents/ml-boilerplate/paper_implimentation/DDPM/dome_diffusion/pictures"
+    args.device = "cpu"
     args.lr = 3e-4
     train(args)
 
